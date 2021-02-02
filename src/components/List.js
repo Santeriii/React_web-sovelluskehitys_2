@@ -1,7 +1,17 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from 'axios'
 import { Table } from 'react-bootstrap'
 
 const List = () => {
+    const [notes, setNotes] = useState([])
+
+    useEffect(() => {
+        axios
+            .get('http://localhost:3001/notes')
+            .then(response => {
+                setNotes(response.data)
+            })
+    }, [])
 
     return(
         <div className="container">
@@ -13,22 +23,18 @@ const List = () => {
             */}
             <Table striped>
             <tbody>
-                <tr>
-                    <td>
-                        <p>1. rivi</p>
-                    </td>
-                    <td>
-                        <p>kdfjhfdkjhsfdkjh</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p>2. rivi</p>
-                    </td>
-                    <td>
-                        <p>jhgkjdkgjgdkjhdgk</p>
-                    </td>
-                </tr>
+                {notes.map(note => {
+                    return (
+                        <tr>
+                            <td>
+                                <p>{note.content}</p>
+                            </td>
+                            <td>
+                                <p>{note.date}</p>
+                            </td>
+                        </tr>
+                    )
+                })}
             </tbody>
             </Table>
 
