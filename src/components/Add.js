@@ -6,20 +6,29 @@ import Button from '@material-ui/core/Button';
 
 const Add = () => {
     const [newNote, setNewNote] = useState('')
+    const [success, setSuccess] = useState('')
+    const [error, setError] = useState('')
 
     const addNote = event => {
         event.preventDefault()
-        const noteObject = {
-            content: newNote,
-            date: new Date().toISOString(),
-            important: false,
+        if (newNote.length > 0) {
+            setSuccess('Tiedot lähetetty')
+            setError('')
+            const noteObject = {
+                content: newNote,
+                date: new Date().toISOString(),
+                important: false,
+            }
+    
+            axios
+                .post('http://localhost:3001/notes', noteObject)
+                .then(
+                    setNewNote('')
+                )
+        } else {
+            setSuccess('')
+            setError("Tyhjä sisältökenttä")
         }
-
-        axios
-            .post('http://localhost:3001/notes', noteObject)
-            .then(response => {
-                setNewNote('')
-            })
     }
 
     const changeNewNote = event => {
@@ -29,7 +38,17 @@ const Add = () => {
     return(
         <div className="container">
            <div>
-               <TextField onChange={changeNewNote}/>
+               {error &&
+                    <div>
+                        {error}
+                    </div>
+               }
+               {success &&
+                <div>
+                    {success}
+                </div>
+               }
+               <TextField onChange={changeNewNote} value={newNote}/>
                <Button onClick={addNote}>Send</Button>
            </div>
         </div>
